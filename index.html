@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор палива</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="card shadow">
+                    <div class="card-header">
+                        <h1 class="mb-4">Лабораторна робота 1</h1>
+                        <ul class="nav nav-tabs card-header-tabs" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link {{if eq .ActiveTab " task1"}}active{{end}}" data-bs-toggle="tab" href="#task1">Завдання 1</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{if eq .ActiveTab " task2"}}active{{end}}" data-bs-toggle="tab" href="#task2">Завдання 2</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content">
+                            <!-- Task 1 -->
+                            <div class="tab-pane fade {{if eq .ActiveTab " task1"}}show active{{end}}" id="task1">
+                                <form method="post">
+                                    <input type="hidden" name="task" value="1">
+                                    <input type="hidden" name="activeTab" value="task1">
+                                    <div class="row g-3">
+                                        <div class="col-md-3">
+                                            <div class="form-floating">
+                                                <input type="number" step="0.01" class="form-control" id="h1" name="h" placeholder="H" required>
+                                                <label for="h1">H</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-floating">
+                                                <input type="number" step="0.01" class="form-control" id="c1" name="c" placeholder="C" required>
+                                                <label for="c1">C</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-floating">
+                                                <input type="number" step="0.01" class="form-control" id="s1" name="s" placeholder="S" required>
+                                                <label for="s1">S</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-floating">
+                                                <input type="number" step="0.01" class="form-control" id="n1" name="n" placeholder="N" required>
+                                                <label for="n1">N</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-floating">
+                                                <input type="number" step="0.01" class="form-control" id="o1" name="o" placeholder="O" required>
+                                                <label for="o1">O</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-floating">
+                                                <input type="number" step="0.01" class="form-control" id="w1" name="w" placeholder="W" required>
+                                                <label for="w1">W</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-floating">
+                                                <input type="number" step="0.01" class="form-control" id="a1" name="a" placeholder="A" required>
+                                                <label for="a1">A</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4">
+                                        <button type="submit" class="btn btn-primary">Розрахувати</button>
+                                    </div>
+                                </form>
+
+                                {{ if .Task1Result }}
+                                <div class="mt-4 result-section">
+                                    <h4 class="mb-3">Результати розрахунку:</h4>
+                                    <div class="alert alert-info">
+                                        <p class="mb-2">Для палива з компонентним складом:</p>
+                                        <p class="mb-0">H={{ printf "%.2f" .TaskOne.H }}%; C={{ printf "%.2f" .TaskOne.C }}%; 
+                                           S={{ printf "%.2f" .TaskOne.S }}%; N={{ printf "%.2f" .TaskOne.N }}%; 
+                                           O={{ printf "%.2f" .TaskOne.O }}%; W={{ printf "%.2f" .TaskOne.W }}%; 
+                                           A={{ printf "%.2f" .TaskOne.A }}%</p>
+                                        <p class="mb-0">Коефіцієнт переходу від робочої до сухої маси: {{ printf "%.2f" .TaskOne.RawToDry }}</p>
+                                        <p class="mb-0">Коефіцієнт переходу від робочої до горючої маси: {{ printf "%.2f" .TaskOne.RawToCombustible }}</p>
+                                        <p class="mb-0">Склад сухої маси палива:</p>
+                                        <p class="mb-0">H={{ printf "%.2f" .TaskOne.HDry }}%; C={{ printf "%.2f" .TaskOne.CDry }}%; 
+                                           S={{ printf "%.2f" .TaskOne.SDry }}%; N={{ printf "%.2f" .TaskOne.NDry }}%; 
+                                           O={{ printf "%.2f" .TaskOne.ODry }}%; A={{ printf "%.2f" .TaskOne.ADry }}%</p>
+                                        <p class="mb-0">Склад горючої маси палива:</p>
+                                        <p class="mb-0">H={{ printf "%.2f" .TaskOne.HCombustible }}%; C={{ printf "%.2f" .TaskOne.CCombustible }}%; 
+                                           S={{ printf "%.2f" .TaskOne.SCombustible }}%; N={{ printf "%.2f" .TaskOne.NCombustible }}%; 
+                                           O={{ printf "%.2f" .TaskOne.OCombustible }}%</p>
+                                        <p class="mb-0">Нижча теплота згоряння для робочої маси: {{ printf "%.4f" .TaskOne.HeatCombustionRaw }} МДж/кг</p>
+                                        <p class="mb-0">Нижча теплота згоряння для сухої маси: {{ printf "%.2f" .TaskOne.HeatCombustionDry }} МДж/кг</p>
+                                        <p class="mb-0">Нижча теплота згоряння для горючої маси: {{ printf "%.2f" .TaskOne.HeatCombustionCom }} МДж/кг</p>
+                                    </div>
+                                </div>
+                                {{ end }}
+                            </div>
+
+                            <!-- Task 2 -->
+                            <div class="tab-pane fade {{if eq .ActiveTab " task2"}}show active{{end}}" id="task2">
+                                <form method="post">
+                                    <input type="hidden" name="task" value="2">
+                                    <input type="hidden" name="activeTab" value="task2">
+                                    <div class="row g-3">
+                                        <div class="col-md-3">
+                                            <div class="form-floating">
+                                                <input type="number" step="0.01" class="form-control" id="h2" name="h" placeholder="H" required>
+                                                <label for="h2">H</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-floating">
+                                                <input type="number" step="0.01" class="form-control" id="c2" name="c" placeholder="C" required>
+                                                <label for="c2">C</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-floating">
+                                                <input type="number" step="0.01" class="form-control" id="s2" name="s" placeholder="S" required>
+                                                <label for="s2">S</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-floating">
+                                                <input type="number" step="0.01" class="form-control" id="v2" name="v" placeholder="V" required>
+                                                <label for="v2">V</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-floating">
+                                                <input type="number" step="0.01" class="form-control" id="o2" name="o" placeholder="O" required>
+                                                <label for="o2">O</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-floating">
+                                                <input type="number" step="0.01" class="form-control" id="w2" name="w" placeholder="W" required>
+                                                <label for="w2">W</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-floating">
+                                                <input type="number" step="0.01" class="form-control" id="a2" name="a" placeholder="A" required>
+                                                <label for="a2">A</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-floating">
+                                                <input type="number" step="0.01" class="form-control" id="q2" name="q" placeholder="Q" required>
+                                                <label for="q2">Q</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4">
+                                        <button type="submit" class="btn btn-primary">Розрахувати</button>
+                                    </div>
+                                </form>
+
+                                {{ if .Task2Result }}
+                                <div class="mt-4 result-section">
+                                    <h4 class="mb-3">Результати розрахунку:</h4>
+                                    <div class="alert alert-info">
+                                        <p class="mb-2">Для складу горючої маси мазуту, що задано наступними параметрами:</p>
+                                        <p class="mb-2">Hг={{ printf "%.2f" .TaskTwo.H }}%; Cг={{ printf "%.2f" .TaskTwo.C }}%; 
+                                           Sг={{ printf "%.2f" .TaskTwo.S }}%; Oг={{ printf "%.2f" .TaskTwo.O }}%; 
+                                           Vг={{ printf "%.2f" .TaskTwo.V }} мг/кг; Wг={{ printf "%.2f" .TaskTwo.W }}%; 
+                                           Aг={{ printf "%.2f" .TaskTwo.A }}%; та нижчою теплотою згоряння горючої маси мазуту 
+                                           Q={{ printf "%.2f" .TaskTwo.Q }} МДж/кг:</p>
+                                        <p class="mb-2">Склад робочої маси мазуту становитиме:</p>
+                                        <p class="mb-2">Hр={{ printf "%.2f" .TaskTwo.HRaw }}%; Cр={{ printf "%.2f" .TaskTwo.CRaw }}%; 
+                                           Sр={{ printf "%.2f" .TaskTwo.SRaw }}%; Oр={{ printf "%.2f" .TaskTwo.ORaw }}%; 
+                                           Vр={{ printf "%.2f" .TaskTwo.VRaw }} мг/кг; Aр={{ printf "%.2f" .TaskTwo.ARaw }}%</p>
+                                        <p class="mb-2">Нижча теплота згоряння мазуту на робочу масу: {{ printf "%.2f" .TaskTwo.HeatCombustibleRaw }} МДж/кг</p>
+                                    </div>
+                                </div>
+                                {{ end }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var activeTab = '{{.ActiveTab}}';
+            if (activeTab) {
+                var tab = document.querySelector('a[href="#' + activeTab + '"]');
+                if (tab) {
+                    new bootstrap.Tab(tab).show();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
